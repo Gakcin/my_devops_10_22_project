@@ -14,7 +14,7 @@ provider "aws" {
 resource "aws_instance" "tf-ec2" {
   ami           = "ami-0ed9277fb7eb570c9"
   instance_type = "t2.micro"
-  key_name      = "Remote-aws" # write your pem file without .pem extension>
+  key_name      = "xxxx" # write your pem file without .pem extension>
   tags = {
     "Name" = "tf-ec2"
   }
