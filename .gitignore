@@ -31,7 +31,11 @@ terraform.rc
 .terraform.lock.hcl
 
 # Ignore Readme.md  files
-.md
+*.md
 
 # Ignore intellig  files
 .idea
+
+# Default ignored files
+/shelf/
+/workspace.xml
