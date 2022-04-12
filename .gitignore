@@ -29,3 +29,9 @@ override.tf.json
 terraform.rc
 
 .terraform.lock.hcl
+
+# Ignore Readme.md  files
+.md
+
+# Ignore intellig  files
+.idea
