@@ -14,7 +14,7 @@ provider "aws" {
 module "s3-website" {
   source = "../../modules/s3-website"
 
-  bucket_name = "clarusway-s3-website"
+  bucket_name = "gokhan-s3-website"
 }
 
 output "website_endpoint" {
