@@ -33,6 +33,9 @@ terraform.rc
 # Ignore Readme.md  files
 *.md
 
+# Ignore image  files
+*.png
+
 # Ignore intellig  files
 .idea
 
