@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: db-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      podname: mongo-db
+  template:
+    metadata:
+      labels:
+        podname: mongo-db
+        svccIPbind: mongo-deploy-svc
+    spec:
+      containers:
+      - image: mongo
+        name: mongo-container
+        ports:
+        - containerPort: 27017
+        volumeMounts:
+          - name: mongo-storage
+            mountPath: /data/db
+      volumes:
+        #- name: mongo-storage
+        #  hostPath:
+        #    path: /home/ubuntu/pv-data
+        - name: mongo-storage
+          persistentVolumeClaim:
+            claimName: db-vol-claim

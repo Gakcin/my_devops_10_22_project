@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: web-deployment-svc
+  labels:
+    svcname: web-svc
+    svcNodeportbind: web-deploy-svc
+spec:
+  selector:
+    svcname: web-svc
+  type: NodePort
+  ports:
+   - name: http
+     port: 3000
+     targetPort: 3000
+     nodePort: 30001
+     protocol: TCP

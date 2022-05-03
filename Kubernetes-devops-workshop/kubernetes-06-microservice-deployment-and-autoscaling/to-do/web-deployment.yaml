@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      podname: web-deployment
+  template:
+    metadata:
+      labels:
+        podname: web-deployment
+        svcNodeportbind: web-deploy-svc
+    spec:
+      containers: 
+        - image: clarusway/todo
+          imagePullPolicy: Always
+          name: myweb-container
+          ports: 
+            - containerPort: 3000
+          env:
+            - name: "DBHOST"
+              value: db-deployment-service # scv-deploy-cluster.yaml içinde metadataname
+          resources:
+            limits:
+              memory: 500Mi
+              cpu: 100m
+            requests:
+              memory: 250Mi
+              cpu: 80m
