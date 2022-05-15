@@ -31,7 +31,7 @@ terraform.rc
 .terraform.lock.hcl
 
 # Ignore Readme.md  files
-#*.md
+*.md
 
 # Ignore image  files
 *.png
