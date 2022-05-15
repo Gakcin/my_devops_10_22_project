@@ -34,7 +34,7 @@ terraform.rc
 *.md
 
 # Ignore image  files
-*.png
+#*.png
 
 # Ignore intellig  files
 .idea

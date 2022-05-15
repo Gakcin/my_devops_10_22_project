@@ -1,0 +1,88 @@
+## Creating infrastructure
+    - Go to AWS console --> CF --> create Stack --> chose file "kubernetes-env-cf.yaml"
+    - wait EC2 instance 2/2 checks passed (master&worker)
+
+## Connect to Master instance via vscode
+    - configure your ssh config  file
+    - install  extension  of  vscode that  is  requried
+
+## Docker Images
+    - We need to create 2 docker images, one is result_server and  the other  is  web_server
+    - explain  2 docker images
+    - create and  push docker  result-server image
+        - docker build -t gakcin/result-server:v1
+        - docker image ls
+        - docker login
+        - docker push gakcin/result-server
+    - create and  push docker  web-server image
+        - docker build -t gakcin/web-server:v1
+        - docker image ls
+        - docker login
+        - docker push gakcin/web-server
+
+## Kubernetes architecture configuration
+
+    - create working  directory as configuration-files
+    - create  sub directories
+        - db-deploy
+            -  db-pv.yaml
+            -  db-pvc.yaml
+            -  db-deploy.yaml
+                $ kubectl create deploy db-deploy --image=mysql:5.7 --dry-run=client -o yaml > db-deploy.yaml
+                - add environment variable to pod
+                - add volume to pod
+                - kubectl apply -f db-deploy
+            -  db-service.yaml
+                
+        - env-config
+            - db-config-map
+            - db-secrets
+            - server-config-map
+        - result-server
+            - result-deploy
+                kubectl create deploy resultserver-deploy --image=gakcin/web-server:v1 --dry-run=client -o yaml > resultserver-deploy.yaml
+            - result-service
+                kubectl expose deploy resultserver-deploy --port=80 --dry-run=client -o yaml > resultserver-service.yaml
+        - web-server
+            - web_service
+                kubectl expose deploy webserver-deploy --port=80 --dry-run=client -o yaml > webserver-service.yaml
+            - web-deploy
+                kubectl create deploy webserver-deploy --image=gakcin/webserver:v1 --dry-run=client -o yaml > webserver-deploy.yaml
+        - ingress-servivce
+
+        ****Helm
+            * curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+helm version # helmi yukle
+            - helm create myphonebookchart # Creating Helm chart. you can see myphonebookchart folder your project files
+            - rm -r myphonebookchart/templates/* # deleting all files in templates folder to be provising Helm myphonebookrelease
+            - copy all k8s yaml files to templates that was created
+            - helm install myphonebookrelease myphonebookchart/ # myphonebookrelease was created from myphonebookchart and then you can see applications you deployed
+            - helm ls
+            - helm uninstall myphonebookrelease # delete all projects with helm
+
+
+Requested files:
+
+ADD/DELETE/UPDATE DEPLOYMENT AND SERVICE
+1. Dockerfile                     # To be delivered by students 
+2. web_server_deployment.yml      # To be delivered by students
+3. web_server_service.yaml        # To be delivered by students
+
+SEARCH DEPLOYMENT AND SERVICE
+1. Dockerfile                     # To be delivered by students
+2. result_server_deployment.yml   # To be delivered by students
+3. result_server_service.yaml     # To be delivered by students
+
+DATABASE DEPLOYMENT AND SERVICE
+1. mysql_deployement.yml          # To be delivered by students
+2. persistent_volume.yaml         # To be delivered by students
+2. persistent_volume_claim.yaml   # To be delivered by students
+
+SECRETS AND CONFIGMAP
+1. mysql-secret.yaml              # To be delivered by students
+2. database_configmap.yaml        # To be delivered by students
+3. servers_configmap.yaml         # To be delivered by students
+
+
+
+
