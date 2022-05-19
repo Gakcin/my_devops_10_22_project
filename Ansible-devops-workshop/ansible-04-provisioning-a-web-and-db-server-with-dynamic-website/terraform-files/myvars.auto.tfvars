@@ -1,8 +1,8 @@
 //aws_access_key = ""
 //aws_secret_key = ""
 myami = "ami-0f095f89ae15be883"
-mykey = "Remote-aws"
-mykeypem = "Remote-aws.pem"
+mykey = "your key pem"
+mykeypem = "your key pem.pem"
 tags = ["control_node", "db_server", "web_server"]
 instancetype = "t2.micro"
 num = 3
