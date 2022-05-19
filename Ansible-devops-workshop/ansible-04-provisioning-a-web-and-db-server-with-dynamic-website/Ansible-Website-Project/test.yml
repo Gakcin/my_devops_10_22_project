@@ -1,0 +1,12 @@
+# magic variables
+- name: test for db configuration
+  hosts: db_server
+  tasks:
+    - debug: var=hostvars
+    - debug: var=hostvars['web_server'].ansible_host
+    - debug: var=hostvars['db_server'].ansible_host
+    - debug: var=ansible_os_family
+    - debug: var=ansible_selinux.config_mode
+    - debug: var=groups['servers']
+    - debug: var=group_names
+    - debug: var=inventory_hostname
