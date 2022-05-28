@@ -1,0 +1,77 @@
+## Check infrastructure
+
+- Connect to ansible control node via ssh
+
+- After checking the ".ansible.cfg" and "inventory_aws_ec2.yml" located /home/ec2-user folder, apply the tasks below
+    ("." is put ansible.cfg file starting so that the file can reachable from anywhere our project)
+
+- sudo yum install tree
+- ansible all -m ping
+- ansible-inventory --graph
+
+## Provisioning Postgresql using ansible playbook
+
+- mkdir ansible && cd ansible (your working direktory)
+
+- mkdir ansible-Project && cd ansible-Project && mkdir postgres nodejs react
+
+- copy student-files folder to ansible folder located ansible control node
+
+- copy /home/ec2-user/ansible/student_files/todo-app-pern/database/init.sql to /home/ec2-user/ansible/ansible-Project/postgres
+
+- Create Dockerfile for Postgresql to /home/ec2-user/ansible/ansible-Project/postgres/Dockerfile
+    - go to dockerhub, search Postgresql image and use latest version for provising docker postgresql image)
+
+- Create docker_postgre.yml to /home/ec2-user/ansible/docker_postgre.yml 
+    - docker_postgre.yml is an ansible playbook and includes tasks/play issued below
+        - name: configure postgresql node
+          hosts: _ansible_postgresql (apply ansible-inventory --graph command and copy postgresql name exluded '@')
+          become: true
+        Preparing tasks :
+        - name: update the node (update latest yum package)
+        - name: uninstall old version ( need to remove all docker version if install before. you can prepare docker installation while creating terraform, )
+        - name: add docker repo (we need docker repo to install docker redhat machine using ansible)
+        - name: install docker (install docker using docker-ce latest)
+        - name: install pip (install python3-pip package to run docker build)
+        - name: install docker sdk (preparing to build docker image)
+        - name: add ec2-user to docker group    (add ec2-user to docker group for runnig docker using ansible module)
+        - name: start docker service 
+        - name: create build directory  (create directory named postgresql located /home/ec2-user/postgresql while using building docker image )
+        - name: copy the sql script (copy /home/ec2-user/ansible/ansible-Project/postgres/init.sql to /home/ec2-user/postgresql )
+        - name: copy the dockerfile (copy /home/ec2-user/ansible/ansible-Project/postgres/Dockerfile to /home/ec2-user/postgresql )
+        - name: remove container and image if exist (if container or image created before, this task remove from registry docker image and container)
+        - name: build container image (we complated all requirements to build docker image performed above)
+        - name: create postgresql docker container (this phase is prepared as if docker run the command is working using ansible docker_container module)
+        - name: print the container_info (to register docker-container)
+
+- Create secret.yml using ansible-vault command 
+    - 'ansible-vault create secret.yml' (put 1234)
+        - paste password: Pp123456789 to secret.yml opened vim editor
+    - put POSTGRES_PASSWORD: "{{ password }}" to docker_postgre.yml
+    - add  vars_files: below secret.yml
+
+## Spin Postgresql using ansible-playbook 
+    - run 'ansible-playbook --ask-vault-pass docker_postgre.yml' on terminal
+    - apply this command 'ansible _ansible_postgresql -m shell -a "sudo docker ps -a" check the container up
+
+## Prepare and spin Nodejs infra (this is backend site)
+
+- copy /home/ec2-user/ansible/student_files/todo-app-pern/server folder to /home/ec2-user/ansible/ansible-Project/nodejs folder
+- Create Dockerfile in /home/ec2-user/ansible/ansible-Project/nodejs
+- put /home/ec2-user/ansible/ansible-Project/nodejs/server/.env private ip of postgres IP adress from AWS console       (DB_HOST=172.31.23.18)
+- create 'docker_nodejs.yml' under /home/ec2-user/ansible/docker_nodejs.yml
+  the same actions that we did in 'Provisioning Postgresql using ansible playbook' step, but update the corresponding paths and image names
+- run 'ansible-playbook docker_nodejs.yml' 
+- apply this command 'ansible _ansible_nodejs -m shell -a "sudo docker ps -a" check the container up
+- goto aws console get nodejs instance public ip and paste it browser (http://18.234.132.209:5000/todos you can see only '[]' due to not connect frontend site as react)
+
+## Prepare and spin React infra (this is frontend site)
+
+- copy /home/ec2-user/ansible/student_files/todo-app-pern/client folder to /home/ec2-user/ansible/ansible-Project/nodejs folder
+- Create Dockerfile in /home/ec2-user/ansible/ansible-Project/react
+- put /home/ec2-user/ansible/ansible-Project/react/client/.env public ip of nodejs from AWS console       (REACT_APP_BASE_URL=http://18.234.132.209:5000/)
+- create 'docker_react.yml' under /home/ec2-user/ansible/docker_react.yml
+  the same actions that we did in 'Provisioning Postgresql using ansible playbook' step, but update the corresponding paths and image names
+- run 'ansible-playbook docker_react.yml' 
+- apply this command 'ansible _ansible_react -m shell -a "sudo docker ps -a" check the container up
+- goto aws console get react instance public ip and paste it browser (http://54.82.80.17:3000 you can see frontend website
