@@ -4,7 +4,7 @@ variable "region" {
   default = "us-east-1"
 }
 variable "mykey" {
-  default = "clarus"
+  default = "Remote-aws"
 }
 variable "tags" {
   default = "jenkins-server"
